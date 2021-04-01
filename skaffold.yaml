@@ -24,3 +24,19 @@ build:
         manual:
           - src: '**/*.js'
             dest: .
+    - image: mehieddine/author
+      context: author
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
+    - image: mehieddine/orders
+      context: orders
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
