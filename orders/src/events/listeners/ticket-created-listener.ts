@@ -1,7 +1,7 @@
 import { Message } from 'node-nats-streaming';
 import {  TicketCreatedEvent } from '../../eventsCommon/ticket-created-event';
+import {Listener} from '../../eventsCommon/base-listener'
 import {Subjects} from '../../eventsCommon/subjects';
-import{Listener} from '../../eventsCommon/base-listener';
 import { Ticket } from '../../models/ticket';
 import { queueGroupName } from './queue-group-name';
 

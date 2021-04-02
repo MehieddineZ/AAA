@@ -1,7 +1,8 @@
 import express, { Request, Response } from 'express';
+
 import {requireAuth} from '../middlewares/require-auth';
-import { NotFoundError} from '../errors/not-found-error';
-import { NotAuthorizedError } from '../errors/not-authorized-error';
+import {NotFoundError} from '../errors/not-found-error';
+import {NotAuthorizedError} from '../errors/not-authorized-error';
 import { Order, OrderStatus } from '../models/order';
 import { OrderCancelledPublisher } from '../events/publishers/order-cancelled-publisher';
 import { natsWrapper } from '../nats-wrapper';
@@ -28,6 +29,7 @@ router.delete(
     // publishing an event saying this was cancelled!
     new OrderCancelledPublisher(natsWrapper.client).publish({
       id: order.id,
+      version: order.version,
       ticket: {
         id: order.ticket.id,
       },

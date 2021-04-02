@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import {requireAuth} from '../middlewares/require-auth';
-import { NotFoundError} from '../errors/not-found-error';
-import { NotAuthorizedError } from '../errors/not-authorized-error';
+import {NotFoundError} from '../errors/not-found-error';
+import {NotAuthorizedError} from '../errors/not-authorized-error';
 import { Order } from '../models/order';
 
 const router = express.Router();

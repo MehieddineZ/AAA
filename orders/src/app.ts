@@ -4,9 +4,7 @@ import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import { errorHandler } from './middlewares/error-handler';
 import { NotFoundError } from './errors/not-found-error';
-
 import { currentUser } from './middlewares/current-user';
-
 import { deleteOrderRouter } from './routes/delete';
 import { indexOrderRouter } from './routes/index';
 import { newOrderRouter } from './routes/new';

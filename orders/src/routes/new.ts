@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import express, { Request, Response } from 'express';
 import {requireAuth} from '../middlewares/require-auth';
-import { NotFoundError} from '../errors/not-found-error';
-import { BadRequestError } from '../errors/bad-request-error';
 import {validateRequest} from '../middlewares/validate-request';
-import {OrderStatus} from '../eventsCommon/types/order-status'
+import {NotFoundError} from '../errors/not-found-error';
+import {OrderStatus} from '../eventsCommon/types/order-status';
+import {BadRequestError} from '../errors/bad-request-error';
 import { body } from 'express-validator';
 import { Ticket } from '../models/ticket';
 import { Order } from '../models/order';
@@ -36,6 +36,11 @@ router.post(
     }
 
     // Make sure that this ticket is not already reserved
+    const isReserved = await ticket.isReserved();
+    if (isReserved) {
+      throw new BadRequestError('Ticket is already reserved');
+    }
+    // Make sure that this ticket is not already reserved
     const existingOrder = await Order.findOne({
       ticket: ticket,
       status: {
@@ -54,6 +59,8 @@ router.post(
     const expiration = new Date();
     expiration.setSeconds(expiration.getSeconds() + EXPIRATION_WINDOW_SECONDS);
 
+
+
     // Build the order and save it to the database
     const order = Order.build({
       userId: req.currentUser!.id,
@@ -66,6 +73,7 @@ router.post(
     // Publish an event saying that an order was created
     new OrderCreatedPublisher(natsWrapper.client).publish({
       id: order.id,
+      version: order.version,
       status: order.status,
       userId: order.userId,
       expiresAt: order.expiresAt.toISOString(),
@@ -74,6 +82,7 @@ router.post(
         price: ticket.price,
       },
     });
+
     res.status(201).send(order);
   }
 );
